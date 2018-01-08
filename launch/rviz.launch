@@ -1,0 +1,7 @@
+<launch>
+  <node pkg="rviz"
+    type="rviz"
+    name="rviz"
+    output="screen"
+    args="-d $(find lu_test)/launch/traject_test1.rviz"/>
+</launch>
