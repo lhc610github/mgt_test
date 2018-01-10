@@ -10,19 +10,48 @@ int main(int argc,char** argv){
     const int dimension = 3;
     const int derivative_to_optimize = mav_trajectory_generation::derivative_order::SNAP;
     mav_trajectory_generation::Vertex start(dimension),middle(dimension),end(dimension);
+    
+    // Time count
+    ros::Time t0 = ros::Time::now();
 
     // Add constraints to the vertices
-    start.makeStartOrEnd(Eigen::Vector3d(0,0,1),derivative_to_optimize);
-    vertices.push_back(start);
+    // curve 1 in paper
+        //start.makeStartOrEnd(Eigen::Vector3d(0,0,1),derivative_to_optimize);
+        //vertices.push_back(start);
 
-    middle.addConstraint(mav_trajectory_generation::derivative_order::POSITION,Eigen::Vector3d(1,0,1));
-    vertices.push_back(middle);
+        //middle.addConstraint(mav_trajectory_generation::derivative_order::POSITION,Eigen::Vector3d(1,0,1));
+        //vertices.push_back(middle);
 
-    middle.addConstraint(mav_trajectory_generation::derivative_order::POSITION,Eigen::Vector3d(1,2,1));
-    vertices.push_back(middle);
+        //middle.addConstraint(mav_trajectory_generation::derivative_order::POSITION,Eigen::Vector3d(1,2,1));
+        //vertices.push_back(middle);
 
-    end.makeStartOrEnd(Eigen::Vector3d(0,2,1),derivative_to_optimize);
-    vertices.push_back(end);
+        //end.makeStartOrEnd(Eigen::Vector3d(0,2,1),derivative_to_optimize);
+        //vertices.push_back(end);
+
+    // curve 2 in paper
+        start.makeStartOrEnd(Eigen::Vector3d(-1.2,0,2),derivative_to_optimize);
+        vertices.push_back(start);
+
+        middle.addConstraint(mav_trajectory_generation::derivative_order::POSITION,Eigen::Vector3d(-0.2,1.0,2.5));
+        vertices.push_back(middle);
+
+        middle.addConstraint(mav_trajectory_generation::derivative_order::POSITION,Eigen::Vector3d(0.2,1.0,2.5));
+        vertices.push_back(middle);
+
+        middle.addConstraint(mav_trajectory_generation::derivative_order::POSITION,Eigen::Vector3d(1.5,0.2,2.0));
+        vertices.push_back(middle);
+
+        middle.addConstraint(mav_trajectory_generation::derivative_order::POSITION,Eigen::Vector3d(1.5,-0.2,2.0));
+        vertices.push_back(middle);
+
+        middle.addConstraint(mav_trajectory_generation::derivative_order::POSITION,Eigen::Vector3d(0.2,-1.0,1.5));
+        vertices.push_back(middle);
+
+        middle.addConstraint(mav_trajectory_generation::derivative_order::POSITION,Eigen::Vector3d(-0.2,-1.0,1.5));
+        vertices.push_back(middle);
+
+        end.makeStartOrEnd(Eigen::Vector3d(-1.2,0,2),derivative_to_optimize);
+        vertices.push_back(end);
 
     //compute the segment times
     std::vector<double> segment_times;
@@ -32,7 +61,7 @@ int main(int argc,char** argv){
     segment_times = estimateSegmentTimes(vertices , v_max , a_max , magic_fabian_constant);
     for (int i = 0; i < segment_times.size(); i ++)
     {
-        std::cout << segment_times[i] << std::endl;
+        //std::cout << segment_times[i] << std::endl;
     }
 
     //N denotes the number of coefficients of the underlying polynomial 
@@ -42,6 +71,8 @@ int main(int argc,char** argv){
     mav_trajectory_generation::PolynomialOptimization<N> opt(dimension);
     opt.setupFromVertices(vertices , segment_times , derivative_to_optimize);
     opt.solveLinear();
+
+    ROS_INFO("Take %f sec to get optimal traject", (ros::Time::now() - t0).toSec());
 
     //Obtain the polynomial segments
     mav_trajectory_generation::Segment::Vector segments;
@@ -63,11 +94,12 @@ int main(int argc,char** argv){
     std::vector<Eigen::VectorXd> result;
     std::vector<double> sampling_times; // Optional.
     trajectory.evaluateRange(t_start, t_end, dt, derivative_order, &result, &sampling_times);
-    std::cout<< sample << std::endl;
+    //std::cout << result.size() << std::endl;
+    //std::cout << sampling_times.size() << std::endl;
 
     //visualizing Trajectories
     visualization_msgs::MarkerArray markers;
-    double distance = 1.0 ;// Distance by which to seperate additional markers. Set 0.0 to disable.
+    double distance = 1.6 ;// Distance by which to seperate additional markers. Set 0.0 to disable.
     std::string frame_id = "world";
     // From Trajectory class:
     mav_trajectory_generation::drawMavTrajectory(trajectory, distance, frame_id, &markers);

@@ -22,11 +22,11 @@ link_directories(${mav_trajectory_generation_ros_LIBRARIES})
 ############
 # BINARIES #
 ############
-cs_add_executable(traject_test 
-  src/traject_test.cpp
+cs_add_executable(linear_traject_test 
+  src/linear_optimal_test.cpp
 )
-target_link_libraries(traject_test  ${mav_trajectory_generation_LIBARIES} )
-target_link_libraries(traject_test  ${mav_trajectory_generation_ros_LIBRARIES})
+target_link_libraries(linear_traject_test  ${mav_trajectory_generation_LIBARIES} )
+target_link_libraries(linear_traject_test  ${mav_trajectory_generation_ros_LIBRARIES})
 
 ##########
 # EXPORT #
