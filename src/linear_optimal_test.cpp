@@ -58,7 +58,7 @@ int main(int argc,char** argv){
     const double v_max = 3.0;
     const double a_max = 3.0;
     const double magic_fabian_constant = 6.5; // A tuning parameter
-    segment_times = estimateSegmentTimes(vertices , v_max , a_max , magic_fabian_constant);
+    segment_times = estimateSegmentTimesNfabian(vertices , v_max , a_max , magic_fabian_constant);
     for (int i = 0; i < segment_times.size(); i ++)
     {
         //std::cout << segment_times[i] << std::endl;
